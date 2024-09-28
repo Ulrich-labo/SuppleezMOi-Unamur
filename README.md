@@ -22,7 +22,7 @@
 ### Installation Steps:
 1. Clone the repository:
     ```bash
-    git clone https://github.com/UNamurCSFaculty/2324_INFOB318_SuppleezMoi.git
+    git clone https://github.com/Ulrich-labo/SuppleezMOi-Unamur.git
     ```
 2. Navigate to the project folder and activate your virtual environment:
     ```bash
