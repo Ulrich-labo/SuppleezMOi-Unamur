@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Page d'accueil professeur</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    {% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'dashboard.css' %}">
+    <link rel="icon" href="/static/LogoDemande.jpg" sizes="32x32" type="image/png">
+    {% endblock %}
+</head>
+
+<body>
+    <header class="navbar sticky-top custom-bg-color flex-md-nowrap p-0 shadow">
+        <span class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6">Demande suppléance</span>
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-nav">
+            <div class="nav-item text-nowrap">
+                <a class="nav-link px-3" href="{% url 'logout' %}?next={% url 'home-page' %}">Sign out</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="position-sticky pt-3 sidebar-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{% url 'home-prof' %}">
+                                <span data-feather="home" class="align-text-bottom"></span>
+                                Accueil professeur
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{% url 'list-demande' %}" >
+                                <span data-feather="file-text" class="align-text-bottom"></span>
+                                Mes demandes en cours  de traitement
+                            </a>
+                        </li>
+
+
+
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{% url 'form-prof' %}" >
+                                <span data-feather="file-text" class="align-text-bottom"></span>
+                                Créer une nouvelle demande
+                            </a>
+                        </li>
+
+			<li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{% url 'cours-prof' %}" >
+                                <span data-feather="file-text" class="align-text-bottom"></span>
+                                Encoder mon cours
+                            </a>
+                        </li>
+<li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{% url 'archive-prof' %}" >
+                                <span data-feather="file-text" class="align-text-bottom"></span>
+                                Mes Archives 
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" >
+
+                
+            
+                <div id ="formulaireContainer">
+
+                    <div class="row entete mb-5">
+                        <h5 class="mt-2">
+                            Chaque demande doit être soumise séparément et les entrées notifiées d'une étoile doivent être obligatoirement remplies
+                        </h5>
+                    </div>
+                   
+                    <!--message en cas de demandes doubles -->
+                        {% block messages %}
+                        {% if messages %}
+                            <ul class="messages">
+                                {% for message in messages %}
+                                    <h3{% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: red; font-size: 18px;">{{ message }}</h3>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {% endblock %}
+
+
+                    <form method="post" action="{% url 'form-prof' %}" class="row g-3 needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+        			<label for="{{ form.cours.id_for_label }}">Cours *</label>
+        			<input type="text" class="form-control typeahead" id="id_cours" name="{{ form.cours.name }}" placeholder="Des choix apparaîtront lors de la saisie. Si c'est pas le cas vous devrez l'encoder.">
+    			</div>
+			
+
+			<div class="mb-3">
+                            <label for="{{ form.cours_optionnel.id_for_label }}">Cours optionnel *</label>
+                            {{ form.cours_optionnel }}
+                        </div>
+
+                        <div class="mb-3" style ="display: none;" >
+                            <label for="{{ form.confirmation_Pour_cours_optionnel.id_for_label }}">Confirmation *</label>
+                            {{ form.confirmation_Pour_cours_optionnel }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.suppleant.id_for_label }}">Proposition de suppléant *</label>
+                            {{ form.suppleant }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.Motif.id_for_label }}">Motif de la demande *</label>
+                            {{ form.Motif }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.imputation.id_for_label }}">Imputation de salaire *</label>
+                            {{ form.imputation }}
+                        </div>
+
+                        <div class="mb-3" >
+                            <label for="{{ form.cpo.id_for_label }}">N° CPO *</label>
+                            {{ form.cpo }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.Accord_suppleant.id_for_label }}">Accord du suppléant (Obligatoire Pour soumission au CA) *</label>
+                            {{ form.Accord_suppleant }}
+                        </div>
+
+                        <div class="mb-3" style="display: none;">
+                            <label for="{{ form.date_soumission.id_for_label }}">Date de soumission *</label>
+                            {{ form.date_soumission }}
+                            
+                        </div>
+
+                        
+                        <div class="mb3">
+                            <div class="row ">
+                                <div class="row mb-3">
+                                    <input type="submit" class="btn btn-primary" name="submit1" value="Soumettre et enregistrer">
+                                </div>
+                                <div class="row mb-3">
+                                    <button type="button" class="btn btn-primary" id="contactAdministration">Contactez l'administration</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
+        integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
+        integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
+        crossorigin="anonymous"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script> 
+
+
+
+    <script src="{% static 'dashboard.js' %}"></script>
+    <script src="{% static 'formprof.js' %}"></script>
+
+<script>
+
+  // Récupére la liste des cours à partir du champ 'cours' dans le formulaire
+  var coursData = {
+  {% for cours_value, cours_label in form.cours.field.choices %}
+  "{{ cours_value }}": decodeHtml("{{ cours_label }}"),// Utilise cours_label car les choix sont des tuples (valeur, libellé)
+  {% endfor %}
+  };
+
+
+  $('#id_cours').typeahead({
+        source: Object.values(coursData), // Utilise les valeurs du tableau pour la correspondance
+           
+    });
+
+  function decodeHtml(html) {
+      var txt = document.createElement("textarea");
+      txt.innerHTML = html;
+      return txt.value;
+  }
+
+
+
+  $('form').submit(function (event) {
+      var allFieldsFilled = true;
+
+      // Vérifiez chaque champ pour voir s'il est rempli
+      $(this).find('input, select, textarea').each(function() {
+          if (!$(this).val()) {
+              allFieldsFilled = false;
+              return false; // Arrête la boucle si un champ vide est trouvé
+          }
+      });
+
+      // Procédez seulement si tous les champs sont remplis
+      if (allFieldsFilled) {
+          var coursValue = $('#id_cours').val();
+
+          if (!(Object.keys(coursData).find(key => coursData[key] === coursValue)) && coursValue !== '') {
+              alert("Aucune valeur dans notre base de données ne semble correspondre à votre cours. Vous devrez d'abord l'encoder manuellement avant de pouvoir soumettre votre demande...");
+              event.preventDefault(); // Empêche l'envoi du formulaire
+          } else {
+              var selectedKey = Object.keys(coursData).find(key => coursData[key] === coursValue);
+              $('#id_cours').val(selectedKey); // identifie le cours correspondant au libellé avant de soumettre le formulaire
+          }
+      }
+  });
+
+
+
+</script>
+
+</body>
+
+</html>

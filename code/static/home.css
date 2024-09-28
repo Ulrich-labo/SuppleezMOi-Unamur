@@ -1,0 +1,48 @@
+@media (min-width: 767px) {
+    .logo {
+        max-width: 750px; 
+        height: auto; 
+        margin-left: 20px;
+        margin-top: 200px;
+    }
+    
+    /* Style for button*/ 
+    .btn {
+        width: 200%;
+        max-width: 300px;
+        margin: 5px;
+        background-color: #4CAF50;
+        height: auto;
+        margin-left: 50px;
+
+    }
+    
+    /* Hide elements with the class "cacherP" on bigger screens */
+    .cacherP {
+        display:none;
+    }
+    
+}
+
+@media (max-width: 767px) {
+    .logo {
+        width: 600px; 
+        height: auto; 
+        margin-left: -20px;
+    }
+
+   
+    /* Style for button*/
+    .btn {
+        width: 100%;
+        max-width: 290px; 
+        margin: 5px;
+        background-color: #4CAF50;
+        height: 35px;
+    }
+
+    /* Hide elements with the class "cacherG" on smaller screens */
+    .cacherG {
+        display:none;
+    }
+}

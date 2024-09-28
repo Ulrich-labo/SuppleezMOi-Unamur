@@ -1,0 +1,548 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper, margin=1in, top=1.25in, headheight=50pt, headsep=0.25in]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{50pt} 
+\setlength{\headsep}{25pt} 
+\renewcommand{\headrulewidth}{2pt} 
+
+\fancyhead[L]{\includegraphics[width=1cm]{logo.png}} 
+\fancyhead[R]{Programmer’s guide\\INFOB318\\UNamur}
+\fancyfoot[C]{\thepage}
+
+
+\renewcommand{\headrule}{\hbox to\headwidth{\color{black}\leaders\hrule height \headrulewidth\hfill}}
+
+
+% Cover page setup
+\title{
+    \vspace{-1in}
+    \begin{center}
+        \includegraphics[width=4cm]{logo.png} 
+    \end{center}
+  
+    {\large INFOB318: Projet individuel}\\
+    \bigskip
+\line(1,0){338} \\ 
+    \bigskip
+    {\huge \textbf{'SuppléezMoi' Programmer’s guide}} \\
+    \bigskip
+    \line(1,0){338} \\ 
+    \bigskip
+    Author: \\
+    \text{Ulrich Touji Nana}\\
+    \bigskip
+    Client: \\
+    \text{Babette di Guardia}\\
+    \bigskip
+    \bigskip
+    12 avril 2024
+}
+
+\date{} 
+
+
+
+\begin{document}
+\maketitle
+\thispagestyle{empty} 
+
+\newpage
+\setcounter{page}{1} 
+\tableofcontents
+\newpage
+
+
+\section{Introduction}
+
+\subsection{What is “SuppléezMoi”?}
+\subsubsection{Objective}
+The application aims to optimize the submission process for substitute requests from University of Namur professors. It simplifies the procedure, ensuring efficient input of substitute requests data by lecturers.
+
+\subsubsection{Functionality Highlights}
+Professors have the capability to input information for the requests through a form provided within the application. Subsequently, the application conducts validation procedures to ensure the completeness of the entered data. The administrative personnel hold the authority to oversee and manage any deficient data, while also supervising the allocation of substitutes through the application.
+
+\subsubsection{Intended Users}
+The target audience includes people familiar with the academic and administrative processes of the Faculty of Informatics at the University of Namur, such as professors, researchers, and the administration.
+
+\subsubsection{User License (Open-Source License)}
+The software is distributed under an MIT open-source license, allowing users to view, modify, and redistribute the source code in accordance with specified terms. Refer to \url{https://fr.wikipedia.org/wiki/Licence_MIT} for detailed information on associated rights and restrictions.
+
+\subsection{General Purpose of the Guide}
+The aim of this guide is to provide clear and concise documentation to enable an external developer to understand the architecture and operation of the web application. It should help the developer quickly become familiar with the code and be able to work independently on the application.
+
+
+
+\newpage
+
+\section{Prerequisites}
+
+\subsection{Application Dependencies and Their Roles}
+
+We have utilized specific versions of various packages for the design of this application, including \texttt{django-jazzmin 2.6.0}, \texttt{django-select2 8.1.2}, \texttt{python-dateutil 2.8.2}, \texttt{python-json-logger 2.0.7}, \texttt{Python 3.10.11}, \texttt{Django 5.0.2}, \texttt{asgiref 3.7.2}, \texttt{sqlparse 0.4.4}, \texttt{typing-extensions 4.9.0}, \texttt{tzdata 2024.1}, and \texttt{openpyxl 3.1.2}. However, it's possible to use later versions of these packages which include all the features of the earlier versions. It's important to note the role of each package in the development of the web application:
+
+\begin{itemize}
+    \item \textbf{Django (5.0.2)} and \textbf{django-jazzmin (2.6.0)}: Provide the main framework for application development, with enhanced user interface through Jazzmin.
+    \item \textbf{django-select2 (8.1.2)}: Adds advanced selection features for forms.
+    \item \textbf{python-dateutil (2.8.2)}: Offers robust and flexible date and time handling.
+    \item \textbf{python-json-logger (2.0.7)}: Enables advanced logging in JSON format, facilitating integration with monitoring and analysis systems.
+    \item \textbf{Python (3.10.11)}: The core programming language for development.
+    \item \textbf{asgiref (3.7.2)}: Ensures asynchronous compatibility with Django, necessary for modern web applications.
+    \item \textbf{sqlparse (0.4.4)}: Used for parsing and splitting SQL statements, useful in database migration scenarios or handling complex SQL queries.
+    \item \textbf{typing-extensions (4.9.0)}: Provides additional typing extensions, useful for clearer code and error prevention.
+    \item \textbf{tzdata (2024.1)}: Offers the latest timezone information for accurate time management.
+    \item \textbf{et-xmlfile (1.1.0)} and \textbf{openpyxl (3.1.2)}: Enable reading and writing Excel files, useful for data import and export.
+\end{itemize}
+
+\newpage
+\subsection{Installation Recommendations}
+
+While it is possible to directly install the required packages on your computer, we strongly recommend using a virtual environment (venv). Because of:
+
+\begin{itemize}
+    \item \textbf{Isolation}: A virtual environment keeps dependencies required by different projects separate by creating isolated python virtual environments for them. This is one of the easiest and most effective ways to manage project dependencies.
+
+    \item \textbf{Version Control}: With venv, it is easier to manage the versions of the packages that your project relies on. It helps ensure that your project remains compatible with the versions of the libraries you develop with, regardless of updates or changes made to these libraries in the future.
+
+    \item \textbf{Simplicity}: Virtual environments make it easy to set up multiple development environments if you are working on several projects. Each project can have its own dependencies, regardless of what dependencies every other project has.
+
+    \item \textbf{No Administrator Rights Required}: Installing packages globally may require administrator rights. Using a virtual environment allows you to install new packages and tools without these rights, making it more convenient, especially on shared systems.
+
+    \item \textbf{Replicability}: It makes your projects more replicable since it’s easier to recreate an environment with specific versions of dependencies.
+\end{itemize}
+
+\section{How to Get the App ?}
+
+\subsection{For Use Purpose}
+No specific prerequisites are required. Simply ensure you are using a modern and updated web browser. The application is accessible via the following website: \url{https://suppleezmoi.unamurcs.be/}.
+
+\subsection{For Development Objectives}
+
+
+The source code of the application is available by following the link github: \url{https://github.com/UNamurCSFaculty/2324_INFOB318_SuppleezMoi.git}. 
+
+This is a private
+Github intended for students of the faculty of computer science but permission could be given
+to anyone wishing to participate in the improvement of the project. 
+
+If you are an internal member of the university, you Also have the option to view or directly modify certain features of the application through its source code deployed on the university-hosted VM. However, this requires a preliminary process. To obtain access keys to the VM where the application was developed, please make a request to the administration section responsible for the application. The file containing the access keys was provided with the application. To obtain these keys, please contact the IT department or the faculty of computer science secretary. They will provide additional information and guide you through the process of obtaining the necessary access keys.
+
+\section{Architecture}
+
+
+This Django application adheres to the MVC (Model-View-Controller) architecture:
+
+\begin{description}
+    \item[Model:] This layer is embodied by the data structure classes in our application, like the models for request and users, among others. These models are central to handling the application's data.
+
+    \item[View:] The View is essentially the user interface aspect of our application. It is realized through various class-based views that are responsible for presenting data to the user. This includes views for tasks like displaying a list of request, filling out a request, and showing results.
+
+    \item[Controller:] In this context, the Controller is manifested through various methods we have implemented to orchestrate the application's logic. This involves functionalities such as creating a new user, adding and removing request and other similar actions.
+\end{description}
+
+This structure ensures a clean separation of concerns, making our application more manageable and scalable.
+
+\subsection{Models}
+Models in Django are specified within the `models.py` file. This file acts as a template, comprising various class templates that delineate the data schema for a web application. In essence, each defined model correlates to a database table, where the fields in the models correspond to the columns in the table. This setup forms the structure of the web application's data architecture.
+
+Example of model :
+
+\begin{lstlisting}[language=Python]
+class Demandes(models.Model):
+    """
+    A model representing substitution requests
+    Attributes
+    ----------
+    STATUT_CHOICES : list of tuple
+        choices for the status of the request
+    OPTION_CHOICES : list of tuple
+        choices for options lectures in the request
+    CHOICES_ACCORD_SUPPLEANT : list of tuple
+        choices for the agreement with the substitute
+    professeur : ForeignKey
+        foreign key to the UserApp model representing the professor making the request
+    cours : ForeignKey
+        foreign key to the Cours model representing the course for the request
+    cours_optionnel : str
+        option for optional course
+    confirmation_Pour_cours_optionnel : str
+        confirmation for an optional course
+    suppleant : str
+        substitute for the professor
+    Motif : TextField
+        reason for the request
+    imputation : ForeignKey
+        foreign key to the ImputationSalaire model representing the salary allocation
+    cpo : str
+        CPO for the request
+    Accord_suppleant : str
+        agreement with the substitute
+    remarque : TextField
+        remarks for the request
+    num_poste : str
+        post number for the request
+    salaire : DecimalField
+        salary for the request
+    Accord_CF : str
+        agreement with the CF
+    date_soumission : DateField
+        date of submission for the request
+    statut_demande : str
+        status of the request
+
+    Methods
+    -------
+    __str__(self):
+        Return a string representation of the request
+    
+    Meta:
+        verbose_name_plural = "Demandes en cours"
+    """
+
+    STATUT_CHOICES = [
+        ('En cours de traitement', 'En cours de traitement'),
+        ('Approuvé', 'Approuvé'),
+        ('Refusé', 'Refusé'),
+    ]
+
+    OPTION_CHOICES = [
+        ('','Sélectionnez une option'),
+        ('Oui', 'Oui'),
+        ('Non', 'Non'),
+    ]
+
+    CHOICES_ACCORD_SUPPLEANT = [
+        ('', 'Sélectionnez une option'),
+        ('Oui', 'Oui'),
+        ('Non', 'Non')
+    ]
+
+    professeur = models.ForeignKey(UserApp, on_delete=models.CASCADE)
+    cours = models.ForeignKey(Cours, on_delete=models.CASCADE)
+    cours_optionnel = models.CharField(max_length=200, choices=OPTION_CHOICES, default='Sélectionnez une option')
+    confirmation_Pour_cours_optionnel = models.CharField(max_length=200, choices=OPTION_CHOICES, default='Sélectionnez une option')
+    suppleant = models.CharField(max_length=200)
+    Motif = models.TextField()
+    imputation = models.ForeignKey(ImputationSalaire, on_delete=models.CASCADE)
+    cpo = models.CharField(max_length=200, null=True, blank=True)
+    Accord_suppleant = models.CharField(max_length=200, choices=CHOICES_ACCORD_SUPPLEANT, default='Sélectionnez une option')
+    remarque = models.TextField(null=True, blank=True)
+    num_poste = models.CharField(max_length=200, null=True, blank=True)
+    salaire = models.DecimalField(default=0, decimal_places=3, max_digits=100, null=True, blank=True)
+    Accord_CF = models.CharField(max_length=200, choices=OPTION_CHOICES, default='Sélectionnez une option')
+    date_soumission = models.DateField(default=timezone.now)
+    statut_demande = models.CharField(max_length=200, choices=STATUT_CHOICES, default='En cours de traitement')
+
+    def __str__(self):
+        """
+        Return a string representation of the request
+        """
+        return str(self.cours)
+    
+    class Meta:
+        """
+        Meta class for Demandes
+        """
+        verbose_name_plural = "Demandes en cours"
+\end{lstlisting}
+\subsection{Views}
+Views are defined in the views.py file. Views are functions or classes that handle HTTP
+requests from the user. Views return an HTTP response that is displayed to the user.For this
+application, we have privileged the implementation of classes for the views because easier to
+handle
+Example of view :
+\begin{lstlisting}[language=Python]
+class FormProfPageView(View):
+    """
+    A class handling the form submission request for professors
+    ...
+    Attributes
+    ----------
+    template_name : str
+        the HTML template file for the form submission view
+    
+    Methods
+    -------
+    get(self, request)
+        Handle GET requests to display the form for submission
+    
+    post(self, request)
+        Handle POST requests to process form submission data
+    """
+   
+    template_name = 'formprof.html'
+    
+    def get(self, request):
+        
+        try:
+            # Assertion to check if the user is authenticated
+            assert request.user.is_authenticated, "vous n'êtes pas authentifié. Vous devez vous connecter avant de pouvoir accéder à cette page."
+            
+            form = DemandesForm()
+            context = {'form': form}
+            return render(request, self.template_name, context) 
+        
+        except AssertionError as e:
+            context = {'error_message': e.args[0]}
+            return render(request, 'generic_error.html', context)
+            
+
+    def post(self, request):
+       
+        try:
+            # Assertion to check if the user is authenticated
+            assert request.user.is_authenticated, "Vous n'êtes pas authentifié. Vous devez vous connecter avant de pouvoir accéder à cette page."
+
+            form = DemandesForm(request.POST)
+            context = {'form': form}
+
+            # Assertion to check if the form is valid
+            assert form.is_valid(), "Le formulaire est invalide. Veuillez vérifier les champs."
+
+            # Retrieve information about the course and submission date from the request
+            cours = form.cleaned_data.get('cours')
+            year = form.cleaned_data.get('date_soumission').year
+            prof = request.user
+
+            # Check if there is already a request for the same course and year
+            existing_demande = Demandes.objects.filter(cours=cours, date_soumission__year=year, professeur=prof).first()
+
+            # Assertion to check if no request exists for the same course and year
+            assert not existing_demande, f"Une demande portant votre nom comme professeur titulaire pour ce cours existe déjà cette année {year}. Si elle n'a pas été soumise par vous, veuillez contacter l'administration."
+
+            # If no request exists, save the form data
+            demande = form.save(commit=False)
+            demande.professeur = request.user
+            demande.save()
+            return redirect('list-demande')
+
+        except AssertionError as e:
+            context = {'error_message': e.args[0]}
+            return render(request, 'generic_error.html', context)
+\end{lstlisting}
+
+\subsection{Controller}
+The controller in this application is defined by the methods that handle the logic of the application. These methods include operations like creating a new request, adding and deleting request, among other functionalities.
+
+            
+\newpage{}
+
+\subsection{Overview}
+\begin{verbatim}
+ProjectSuppleezM/
+|-- SuppleezApp/
+|   |-- migrations/
+|   |   |   |-- 0001_initial.py
+|   |   |   |-- 0002_demandes_cours_optionnel_and_more.py
+|   |   |   |-- 0003_alter_demandes_cours_optionnel_and_more.py
+|   |   |   |-- 0004_remove_cours_cours_optionnel_and_more.py
+|   |   |   |-- 0005_alter_demandes_date_soumission_and_more.py
+|   |   |   |-- 0006_alter_archivedemandesupprime_cours_optionnel_and_more.py
+|   |   |   |-- 0007_alter_cours_options_alter_demandes_options_and_more.py
+|   |   |   |-- 0008_alter_archivedemandesupprime_date_soumission_and_more.py
+|   |   |   |-- 0009_alter_archivedemandesupprime_options_and_more.py
+|   |-- templates/
+|   |   |   |-- 404.html
+|   |   |   |-- 500.html
+|   |   |   |-- archiveprofesseur.html
+|   |   |   |-- encodercours.html
+|   |   |   |-- formprof.html
+|   |   |   |-- generic_error.html
+|   |   |   |-- home.html
+|   |   |   |-- listeDemande.html
+|   |   |   |-- login.html
+|   |   |   |-- signup.html
+|   |   |   |-- template_erreur_csrf.html
+|   |-- admin.py
+|   |-- apps.py
+|   |-- forms.py
+|   |-- apps.py
+|   |-- models.py
+|   |-- signals.py
+|   |-- tests.py
+|   |-- views.py
+|-- SuppleezM/
+|   |-- asgi.py
+|   |-- settings.py
+|   |-- urls.py
+|   |-- wsgi.py
+|-- static/
+|   |-- all static file
+|-- db.sqlite3
+|-- manage.py
+|-- requirements.txt
+
+\end{verbatim}
+
+\newpage{}
+\subsection{Details of the Overview}
+The most important files in our Django application include:
+
+\begin{itemize}
+    \item \texttt{settings.py}: Contains the configuration parameters of the application such as database information, secret keys, security parameters, etc.
+    \item \texttt{urls.py}: Contains the URLs of the application.
+    \item \texttt{asgi.py} and \texttt{wsgi.py}: Necessary for the deployment of the application.
+    \item \texttt{models.py}: Contains the models of classes which define the structure of the database.
+    \item \texttt{views.py}: Contains the view functions that process HTTP requests and return the appropriate HTTP responses.
+    \item \texttt{test.py}: A file containing the tests of the application.
+    \item \texttt{templates/}: A directory containing the HTML files used to render the web pages.
+\end{itemize}
+
+\section{Test File}
+
+The test suite for models and views is divided into several classes. Each class contains specific tests, inheriting from the \texttt{TestCase} or \texttt{SimpleTestCase} classes provided by Django. Here's an outline of the various tests and their objectives:
+
+\subsection{Model Tests}
+
+\begin{description}
+  \item[UserAppTest:] Verifies the correct creation of a user.
+  \begin{description}
+    \item[test\_user\_creation:] Creates a user with a predefined set of parameters and verifies its existence in the database.
+  \end{description}
+  
+  \item[CoursModelTest:] Verifies the Cours model.
+  \begin{description}
+    \item[test\_cours\_representation:] Ensures that the string representation of the \texttt{Cours} model is correct.
+  \end{description}
+
+  \item[ImputationSalaireModelTest:] Verifies the \texttt{ImputationSalaire} model.
+  \begin{description}
+    \item[test\_Imputation\_representation:] Checks that the string representation of \texttt{ImputationSalaire} is accurate.
+  \end{description}
+
+  \item[DemandesModelTest:] Verifies the \texttt{Demandes} model.
+  \begin{description}
+    \item[test\_demandes\_representation:] Creates a set of requests with proper relationships and verifies that the string representation is accurate.
+  \end{description}
+
+  \item[ArchiveDemandeTraiteModelTest:] Verifies the archive model for processed requests.
+  \begin{description}
+    \item[test\_ArchiveTraite\_representation:] Confirms that the string representation of archived processed requests is correct.
+  \end{description}
+
+  \item[ArchiveDemandeSupprimeModelTest:] Verifies the archive model for deleted requests.
+  \begin{description}
+    \item[test\_ArchiveSupprime\_representation:] Confirms that the string representation of archived deleted requests is correct.
+  \end{description}
+\end{description}
+
+\subsection{View Tests}
+
+\begin{description}
+  \item[HomeProfViewTest:] Verifies the features of the homepage.
+  \begin{description}
+    \item[test\_home\_page\_loads\_properly:] Checks that the homepage loads correctly.
+    \item[test\_template\_name\_correct:] Ensures that the appropriate template is used to render the homepage.
+    \item[test\_url\_available\_by\_name:] Confirms that the homepage loads correctly using its URL name.
+    \item[test\_url\_exists\_at\_correct\_location:] Confirms that the homepage URL is correct.
+  \end{description}
+  
+  \item[ListDemandesViewTest:] Ensures correct display of the request list.
+  \begin{description}
+    \item[test\_template\_used:] Verifies that the correct template is used.
+    \item[test\_view\_returns\_200\_when\_authenticated:] Confirms that the view returns a status code of 200 when the user is authenticated.
+    \item[test\_user\_requests\_are\_displayed:] Confirms that the user's requests are displayed correctly in the template.
+  \end{description}
+
+  \item[ListDemandesArchiveViewTest:] Checks the display of archived requests.
+  \begin{description}
+    \item[test\_template\_used:] Ensures that the appropriate template is used to display the archives.
+    \item[test\_view\_returns\_200\_when\_authenticated:] Confirms that the view returns a status code of 200 when the user is authenticated.
+    \item[test\_archived\_requests\_are\_displayed:] Verifies that archived requests are displayed accurately in the template.
+  \end{description}
+
+  \item[FormProfPageViewTest:] Verifies the professor form page.
+  \begin{description}
+    \item[test\_get\_view\_authenticated\_user:] Confirms that the form page is accessible to an authenticated user.
+    \item[test\_get\_view\_non\_authenticated\_user:] Confirms that the form page is not accessible to an unauthenticated user.
+  \end{description}
+
+  \item[CustomLoginViewTest:] Verifies the custom login view.
+  \begin{description}
+    \item[test\_get\_login\_view:] Confirms that the login page is accessible via GET.
+    \item[test\_post\_valid\_login\_form:] Verifies that a user can log in with a valid form.
+    \item[test\_post\_invalid\_login\_form:] Checks that the login form shows an appropriate error message when it is invalid.
+  \end{description}
+
+  \item[SignUpViewTest:] Verifies the signup page.
+  \begin{description}
+    \item[test\_get\_signup\_view:] Ensures that the signup page is accessible via GET.
+    \item[test\_post\_valid\_signup\_form:] Confirms that a user can sign up with a valid form.
+    \item[test\_post\_invalid\_signup\_form:] Ensures that the signup form shows the correct error message when it is invalid.
+  \end{description}
+
+  \item[CoursViewTest:] Verifies the course form view.
+  \begin{description}
+    \item[test\_get\_cours\_view\_authenticated:] Confirms that the course page is accessible to an authenticated user.
+    \item[test\_get\_view\_non\_authenticated\_user:] Confirms that the course page is not accessible to an unauthenticated user.
+    \item[test\_post\_valid\_cours\_form:] Verifies that a valid form redirects correctly and creates a new \texttt{Cours} object.
+    \item[test\_post\_invalid\_cours\_form:] Checks that an invalid form shows an appropriate error message.
+  \end{description}
+
+  \item[LogoutViewTest:] Verifies the logout functionality.
+  \begin{description}
+    \item[test\_logout\_authenticated\_user:] Confirms that logout redirects the user to the homepage.
+    \item[test\_get\_view\_non\_authenticated\_user:] Confirms that logout is not possible for an unauthenticated user.
+  \end{description}
+\end{description}
+
+
+
+
+
+
+
+
+
+\section{Frontend and Backend Technologies}
+
+Our application employs HTML, JavaScript, CSS, and Bootstrap, alongside additional scripts to enhance the user experience. We will focus specifically on jQuery in this discussion
+
+\subsection*{jQuery}
+
+\textbf{Description:} jQuery is a JavaScript library that simplifies DOM manipulation and interactions with browser events.
+
+\paragraph{Usage:} We integrate jQuery to facilitate JavaScript operations and manipulate the DOM more efficiently.
+
+
+
+\paragraph{}By incorporating these scripts, we enhance our web application with advanced features, providing a smoother and more interactive user experience. 
+
+\section{Contact}
+For any question or suggestion, feel free to send me an email to :ulrich.toujinana@student.unamur.be or to ulrich.nana90@gmail.com .
+
+
+\end{document}
+

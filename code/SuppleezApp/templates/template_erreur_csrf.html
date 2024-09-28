@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    <title>Erreur CSRF</title>
+    <link rel="stylesheet" href="{% static 'erreur.css' %}">
+
+</head>
+<body>
+<div class="error-container">
+    <h1>Erreur CSRF</h1>
+    <p>{{ message }}</p>
+</div>
+</body>
+</html>

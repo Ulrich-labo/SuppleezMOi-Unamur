@@ -1,0 +1,41 @@
+/* style for the borther of the login */
+div {
+    border: 1px solid black;
+}
+
+
+/* adjust the message in the login card */
+.message{
+border: 0px;
+justify-content: center;
+display:flex;
+}
+
+.noborder{
+border: 0px solid white;
+}
+.container {
+margin-top: 150px;
+}
+
+/* Centering an image horizontally */
+.center-image {
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+.card{
+margin-top: 70px;
+}
+
+/* Background and text color for the login button*/
+.green-bg {
+background-color: rgb(86, 190, 86); 
+color: white; 
+}
+
+
+
+
+

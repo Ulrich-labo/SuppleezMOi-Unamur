@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    <link rel="stylesheet" href="{% static 'erreur.css' %}">
+    <title>Erreur d'Assertion Personnalisée</title>
+
+</head>
+<body>
+    <div class="error-container">
+        <h1>Erreur de Validation </h1>
+        <p>Une erreur est survenue lors du chargement de la page:</p>
+        <p>{{ error_message }}</p>
+    </div>
+</body>
+</html>
+
